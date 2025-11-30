@@ -1,6 +1,9 @@
 package com.groupeisi.m2gl.ms_marchand_g4.services;
 
+import com.groupeisi.m2gl.ms_marchand_g4.clients.TrxEngineClient;
+import com.groupeisi.m2gl.ms_marchand_g4.clients.dto.UserResponse;
 import com.groupeisi.m2gl.ms_marchand_g4.entities.Marchand;
+import com.groupeisi.m2gl.ms_marchand_g4.graphql.MarchandMutationResolver;
 import com.groupeisi.m2gl.ms_marchand_g4.repository.MarchandRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -11,19 +14,34 @@ import java.util.List;
 public class MarchandService {
     private final MarchandRepository repo;
     private final PasswordEncoder passwordEncoder;
+    private final TrxEngineClient trxEngineClient;
 
-    public MarchandService(MarchandRepository repo, PasswordEncoder passwordEncoder) {
+    public MarchandService(MarchandRepository repo, PasswordEncoder passwordEncoder, TrxEngineClient trxEngineClient) {
         this.repo = repo;
         this.passwordEncoder = passwordEncoder;
+        this.trxEngineClient = trxEngineClient;
     }
 
-    public Marchand createMarchand(String nomBoutique, String logoBoutique, String password, Integer user_id) {
-        Marchand m = new Marchand();
-        m.setNomBoutique(nomBoutique);
-        m.setLogoBoutique(logoBoutique);
-        m.setPassword(passwordEncoder.encode(password));
-        m.setUser_id(user_id);
-        return repo.save(m);
+    public Marchand createMarchand(MarchandMutationResolver.MarchandInput input) {
+        // 1. Vérifier si l’utilisateur existe dans TRX-ENGINE
+        UserResponse user = trxEngineClient.getUserByPhone(input.telephone());
+        //TODO: gérer le cas où l'utilisateur n'existe pas
+        //TODO: Verifier la serialisation cote TRX-ENGINE
+        if (user == null || user.getId() == null) {
+            throw new RuntimeException("Aucun utilisateur trouvé avec ce numéro.");
+        }
+
+        // 2. Hasher le password
+        String hashedPassword = passwordEncoder.encode(input.password());
+
+        // 3. Sauvegarder le marchand
+        Marchand marchand = new Marchand();
+        marchand.setNomBoutique(input.nomBoutique());
+        marchand.setLogoBoutique(input.logoBoutique());
+        marchand.setPassword(hashedPassword);
+        marchand.setUser_id(user.getId());  // Vient de TRX-ENGINE
+
+        return repo.save(marchand);
     }
     public List<Marchand> getAllMarchands() {
         return repo.findAll();

@@ -18,12 +18,7 @@ public class MarchandMutationResolver {
 
     @MutationMapping
     public Marchand createMarchand(@Argument MarchandInput input) {
-       return  marchandService.createMarchand(
-               input.nomBoutique(),
-               input.logoBoutique(),
-               input.password(),
-               input.user_id());
-
+       return  marchandService.createMarchand(input);
     }
-    public record MarchandInput(String nomBoutique, String logoBoutique, String password,Integer user_id) {}
+    public record MarchandInput(String nomBoutique, String logoBoutique, String password,Integer user_id,String telephone) {}
 }

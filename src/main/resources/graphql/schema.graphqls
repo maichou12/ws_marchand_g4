@@ -10,6 +10,7 @@ input MarchandInput {
     nomBoutique: String!
     logoBoutique: String!
     password: String!
+    telephone: String!
     user_id: Int!
 }
 
