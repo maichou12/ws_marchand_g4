@@ -1,0 +1,23 @@
+type Marchand {
+    id: ID!
+    nomBoutique: String
+    logoBoutique: String
+    password: String
+    user_id: Int
+}
+
+input MarchandInput {
+    nomBoutique: String!
+    logoBoutique: String!
+    password: String!
+    user_id: Int!
+}
+
+type Query {
+    marchands: [Marchand!]!     # ↔ @QueryMapping(name = "marchands")
+    marchand(id: ID!): Marchand      # ↔ @QueryMapping public Marchand
+}
+
+type Mutation {
+    createMarchand(input: MarchandInput!): Marchand
+}
