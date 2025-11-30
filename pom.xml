@@ -67,7 +67,10 @@
             <artifactId>postgresql</artifactId>
             <scope>runtime</scope>
         </dependency>
-
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
         <!-- Swagger pour WebFlux & Spring Boot 4 -->
         <dependency>
             <groupId>org.springdoc</groupId>
