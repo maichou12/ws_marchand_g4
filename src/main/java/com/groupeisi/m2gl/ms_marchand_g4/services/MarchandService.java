@@ -30,7 +30,8 @@ public class MarchandService {
         if (user == null || user.getId() == null) {
             throw new RuntimeException("Aucun utilisateur trouvé avec ce numéro.");
         }
-
+        //TODO: Creer et Récupérer le compte_id depuis TRX-ENGINE
+        Integer compteId = 1; // Valeur fictive, à remplacer par la vraie récupération
         // 2. Hasher le password
         String hashedPassword = passwordEncoder.encode(input.password());
 
@@ -39,7 +40,8 @@ public class MarchandService {
         marchand.setNomBoutique(input.nomBoutique());
         marchand.setLogoBoutique(input.logoBoutique());
         marchand.setPassword(hashedPassword);
-        marchand.setUser_id(user.getId());  // Vient de TRX-ENGINE
+        marchand.setUser_id(user.getId());// Vient de TRX-ENGINE
+        marchand.setCompte_id(compteId);
 
         return repo.save(marchand);
     }
