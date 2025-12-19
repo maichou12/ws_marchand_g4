@@ -45,6 +45,7 @@ public class MarchandService {
 
         return repo.save(marchand);
     }
+
     public List<Marchand> getAllMarchands() {
         return repo.findAll();
     }
