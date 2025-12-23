@@ -8,4 +8,7 @@ public class UserResponse {
     private Integer id;
     private String prenom;
     private String nom;
+    private String telephone;
+    private Integer compteId;
+    private String nomUtilisateur;
 }
