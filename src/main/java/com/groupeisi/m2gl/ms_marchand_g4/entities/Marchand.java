@@ -21,4 +21,5 @@ public class Marchand {
     private String logoBoutique;
     private String password;
     private int user_id;
+    private int compte_id;
 }
