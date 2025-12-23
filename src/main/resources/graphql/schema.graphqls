@@ -4,6 +4,7 @@ type Marchand {
     logoBoutique: String
     password: String
     user_id: Int
+    compte_id: Int
 }
 
 input MarchandInput {

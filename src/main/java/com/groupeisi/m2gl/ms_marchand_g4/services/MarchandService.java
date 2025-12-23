@@ -7,8 +7,6 @@ import com.groupeisi.m2gl.ms_marchand_g4.graphql.MarchandMutationResolver;
 import com.groupeisi.m2gl.ms_marchand_g4.repository.MarchandRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Schedulers;
 
 import java.util.List;
 
