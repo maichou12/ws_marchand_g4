@@ -5,6 +5,7 @@ import lombok.Data;
 @Data
 public class UserResponse {
 
+    private Integer id;
     private String message;
     private boolean success;
     private int statusCode;

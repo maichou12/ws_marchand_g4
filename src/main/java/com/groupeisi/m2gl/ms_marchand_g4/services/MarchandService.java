@@ -1,6 +1,7 @@
 package com.groupeisi.m2gl.ms_marchand_g4.services;
 
 import com.groupeisi.m2gl.ms_marchand_g4.clients.TrxEngineClient;
+import com.groupeisi.m2gl.ms_marchand_g4.clients.dto.CompteResponse;
 import com.groupeisi.m2gl.ms_marchand_g4.clients.dto.UserResponse;
 import com.groupeisi.m2gl.ms_marchand_g4.entities.Marchand;
 import com.groupeisi.m2gl.ms_marchand_g4.graphql.MarchandMutationResolver;
@@ -22,26 +23,33 @@ public class MarchandService {
         this.trxEngineClient = trxEngineClient;
     }
 
-    public Marchand createMarchand(MarchandMutationResolver.MarchandInput input){
-        try{
-            UserResponse user =
-                    trxEngineClient.getUserByPhone(input.telephone());
-
-            if (user == null || user.getData() == null) {
-                throw new RuntimeException("Utilisateur introuvable");
-            }
-
-            Marchand marchand = new Marchand();
-            marchand.setNomBoutique(input.nomBoutique());
-            marchand.setLogoBoutique(input.logoBoutique());
-            marchand.setPassword(passwordEncoder.encode(input.password()));
-            marchand.setUser_id(user.getData().getId());
-
-            return repo.save(marchand);
-        }catch (Exception e){
-            System.out.println("Erreur "+e.getMessage());
+    public Marchand createMarchand(MarchandMutationResolver.MarchandInput input) {
+        // 1. Vérifier si l’utilisateur existe dans TRX-ENGINE
+        UserResponse user = trxEngineClient.getUserByPhone(input.telephone());
+        //TODO: gérer le cas où l'utilisateur n'existe pas
+        //TODO: Verifier la serialisation cote TRX-ENGINE
+        if (user == null || user.getData().getId() == null) {
+            throw new RuntimeException("Aucun utilisateur trouvé avec ce numéro.");
         }
-       return null;
+        CompteResponse<Integer> compteResponse = trxEngineClient.createCompteMarchand(user.getTelephone());
+        if (compteResponse == null
+                || !compteResponse.isSuccess()
+                || compteResponse.getData() == null) {
+            throw new RuntimeException("Erreur lors de la création du compte marchand");
+        }
+        Integer compteIdMarchand = compteResponse.getData();
+        // 2. Hasher le password
+        String hashedPassword = passwordEncoder.encode(input.password());
+
+        // 3. Sauvegarder le marchand
+        Marchand marchand = new Marchand();
+        marchand.setNomBoutique(input.nomBoutique());
+        marchand.setLogoBoutique(input.logoBoutique());
+        marchand.setPassword(hashedPassword);
+        marchand.setUser_id(user.getId());  // Vient de TRX-ENGINE
+        marchand.setCompte_id(compteIdMarchand);
+
+        return repo.save(marchand);
     }
     public List<Marchand> getAllMarchands() {
         return repo.findAll();

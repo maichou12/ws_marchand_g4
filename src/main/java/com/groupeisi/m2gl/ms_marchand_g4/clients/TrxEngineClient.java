@@ -16,7 +16,8 @@ import reactor.core.publisher.Mono;
 
 @FeignClient(name = "trx-engine-service",url = "http://localhost:8081")
 public interface TrxEngineClient {
-    UserResponse getUserByPhone(String phone);
+    @GetMapping("/api/users/getUserByPhone/{phone}")
+    UserResponse getUserByPhone(@PathVariable("phone") String phone);
 
     /*@PostMapping("/api/comptes/create-marchand/{userId}")
     CompteResponse createCompteMarchand(@PathVariable("userId") Integer userId);*/
