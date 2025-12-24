@@ -1,0 +1,34 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:16
+    container_name: postgres_marchand
+    restart: always
+    environment:
+      POSTGRES_DB: ws_marchand_g4
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: passer
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  app:
+    image: dji7/ws_marchand:dev
+    container_name: ws_marchand_app
+    restart: always
+    ports:
+      - "8082:8082"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/ws_marchand_g4
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: passer
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_JPA_SHOW_SQL: "true"
+      SPRING_PROFILES_ACTIVE: dev
+    depends_on:
+      - db
+
+volumes:
+  pgdata:

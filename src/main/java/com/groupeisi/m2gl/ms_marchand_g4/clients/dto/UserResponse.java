@@ -4,8 +4,13 @@ import lombok.Data;
 
 @Data
 public class UserResponse {
-    //TODO: compléter les champs selon la réponse de TRX-ENGINE
+
     private Integer id;
-    private String prenom;
-    private String nom;
+    private String message;
+    private boolean success;
+    private int statusCode;
+    private UserData data;
+    private String telephone;
+    private Integer compteId;
+    private String nomUtilisateur;
 }
