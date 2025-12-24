@@ -24,12 +24,12 @@ public class MarchandService {
 
     public Marchand createMarchand(MarchandMutationResolver.MarchandInput input) {
         // 1. Vérifier si l’utilisateur existe dans TRX-ENGINE
-        UserResponse user = trxEngineClient.getUserByPhone(input.telephone());
-        //TODO: gérer le cas où l'utilisateur n'existe pas
-        //TODO: Verifier la serialisation cote TRX-ENGINE
-        if (user == null || user.getId() == null) {
-            throw new RuntimeException("Aucun utilisateur trouvé avec ce numéro.");
-        }
+//        UserResponse user = trxEngineClient.getUserByPhone(input.telephone());
+//        //TODO: gérer le cas où l'utilisateur n'existe pas
+//        //TODO: Verifier la serialisation cote TRX-ENGINE
+//        if (user == null || user.getId() == null) {
+//            throw new RuntimeException("Aucun utilisateur trouvé avec ce numéro.");
+//        }
         //TODO: Creer et Récupérer le compte_id depuis TRX-ENGINE
         Integer compteId = 1; // Valeur fictive, à remplacer par la vraie récupération
         // 2. Hasher le password
@@ -40,7 +40,7 @@ public class MarchandService {
         marchand.setNomBoutique(input.nomBoutique());
         marchand.setLogoBoutique(input.logoBoutique());
         marchand.setPassword(hashedPassword);
-        marchand.setUser_id(user.getId());// Vient de TRX-ENGINE
+        marchand.setUser_id(1);// Vient de TRX-ENGINE
         marchand.setCompte_id(compteId);
 
         return repo.save(marchand);
