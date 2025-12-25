@@ -28,10 +28,10 @@ public class MarchandService {
         UserResponse user = trxEngineClient.getUserByPhone(input.telephone());
         //TODO: gérer le cas où l'utilisateur n'existe pas
         //TODO: Verifier la serialisation cote TRX-ENGINE
-        if (user == null || user.getData().getId() == null) {
-            throw new RuntimeException("Aucun utilisateur trouvé avec ce numéro.");
+        if (user.getStatusCode()==404) {
+            throw new RuntimeException("Aucun utilisateur trouvé avec ce numéro de téléphone : " + input.telephone());
         }
-        CompteResponse<Integer> compteResponse = trxEngineClient.createCompteMarchand(user.getTelephone());
+        CompteResponse<Integer> compteResponse = trxEngineClient.createCompteMarchand(input.telephone());
         if (compteResponse == null
                 || !compteResponse.isSuccess()
                 || compteResponse.getData() == null) {
@@ -46,7 +46,7 @@ public class MarchandService {
         marchand.setNomBoutique(input.nomBoutique());
         marchand.setLogoBoutique(input.logoBoutique());
         marchand.setPassword(hashedPassword);
-        marchand.setUser_id(user.getId());  // Vient de TRX-ENGINE
+        marchand.setUser_id(user.getData().getId());  // Vient de TRX-ENGINE
         marchand.setCompte_id(compteIdMarchand);
 
         return repo.save(marchand);
