@@ -14,7 +14,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
-@FeignClient(name = "trx-engine-service",url = "http://localhost:8081")
+@FeignClient(name = "trx-engine-service",url = "${trx-engine.base-url:http://localhost:8081}")
 public interface TrxEngineClient {
     @GetMapping("/api/users/getUserByPhone/{phone}")
     UserResponse getUserByPhone(@PathVariable("phone") String phone);
