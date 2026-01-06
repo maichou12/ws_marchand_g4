@@ -21,7 +21,10 @@ public class SecurityConfig {
 
         http
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
+                .cors() // 👈 IMPORTANT
+                .and()
                 .authorizeExchange(exchanges -> exchanges
+                        .pathMatchers("/graphql").permitAll()
                         .anyExchange().permitAll()
                 );
 
